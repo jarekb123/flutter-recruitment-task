@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:bloc/bloc.dart';
 import 'package:flutter_recruitment_task/models/get_products_page.dart';
 import 'package:flutter_recruitment_task/models/products_page.dart';
@@ -12,9 +14,15 @@ class Loading extends HomeState {
 }
 
 class Loaded extends HomeState {
-  const Loaded({required this.pages});
+  const Loaded({
+    required this.products,
+    this.initialProductIndex,
+    required this.nextPageIndex,
+  });
 
-  final List<ProductsPage> pages;
+  final List<Product> products;
+  final int? initialProductIndex;
+  final int? nextPageIndex;
 }
 
 class Error extends HomeState {
@@ -23,23 +31,87 @@ class Error extends HomeState {
   final dynamic error;
 }
 
+class _PaginatedResult<T> {
+  const _PaginatedResult({
+    required this.items,
+    required this.nextPageIndex,
+  });
+
+  final List<T> items;
+  final int? nextPageIndex;
+}
+
 class HomeCubit extends Cubit<HomeState> {
-  HomeCubit(this._productsRepository) : super(const Loading());
+  HomeCubit(
+    this._productsRepository, {
+    this.initialProductId,
+  }) : super(const Loading());
 
   final ProductsRepository _productsRepository;
-  final List<ProductsPage> _pages = [];
-  var _param = GetProductsPage(pageNumber: 1);
+  final String? initialProductId;
 
-  Future<void> getNextPage() async {
-    try {
-      final totalPages = _pages.lastOrNull?.totalPages;
-      if (totalPages != null && _param.pageNumber > totalPages) return;
-      final newPage = await _productsRepository.getProductsPage(_param);
-      _param = _param.increasePageNumber();
-      _pages.add(newPage);
-      emit(Loaded(pages: _pages));
-    } catch (e) {
-      emit(Error(error: e));
+  Future<void> getNextPage({String? lookupProductId}) async {
+    final state = this.state;
+    if (state is Loading) {
+      // first page
+      final page = await _getPage(1);
+      final initialProductIndex = lookupProductId != null
+          ? _getIndexForProduct(lookupProductId, page.items)
+          : null;
+
+      emit(
+        Loaded(
+          products: page.items,
+          initialProductIndex: initialProductIndex,
+          nextPageIndex: page.nextPageIndex,
+        ),
+      );
+
+      if (lookupProductId != null && initialProductIndex == null) {
+        getNextPage(lookupProductId: lookupProductId);
+      }
+    } else if (state is Loaded) {
+      final nextPageIndex = state.nextPageIndex;
+      if (nextPageIndex == null) {
+        return;
+      }
+
+      final page = await _getPage(nextPageIndex);
+      final products = [
+        ...state.products,
+        ...page.items,
+      ];
+      final initialProductIndex = lookupProductId != null
+          ? _getIndexForProduct(lookupProductId, products)
+          : null;
+
+      emit(
+        Loaded(
+          products: products,
+          initialProductIndex: initialProductIndex,
+          nextPageIndex: page.nextPageIndex,
+        ),
+      );
+
+      if (lookupProductId != null && initialProductIndex == null) {
+        getNextPage(lookupProductId: lookupProductId);
+      }
     }
+  }
+
+  Future<_PaginatedResult<Product>> _getPage(int pageNumber) async {
+    log('Getting page $pageNumber');
+
+    final page = await _productsRepository
+        .getProductsPage(GetProductsPage(pageNumber: pageNumber));
+
+    final nextPageIndex = page.totalPages > pageNumber ? pageNumber + 1 : null;
+
+    return _PaginatedResult(items: page.products, nextPageIndex: nextPageIndex);
+  }
+
+  int? _getIndexForProduct(String productId, List<Product> products) {
+    final index = products.indexWhere((product) => product.id == productId);
+    return index != -1 ? index : null;
   }
 }

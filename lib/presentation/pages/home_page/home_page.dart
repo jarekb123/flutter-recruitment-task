@@ -5,35 +5,48 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_recruitment_task/models/products_page.dart';
 import 'package:flutter_recruitment_task/presentation/pages/home_page/home_cubit.dart';
 import 'package:flutter_recruitment_task/presentation/widgets/big_text.dart';
+import 'package:scrollview_observer/scrollview_observer.dart';
 
 const _mainPadding = EdgeInsets.all(16.0);
 
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+  const HomePage({
+    super.key,
+    this.lookupProductId,
+  });
+
+  /// The ID of the product to be scrolled to when the page is opened.
+  final String? lookupProductId;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const BigText('Products'),
-      ),
-      body: Padding(
-        padding: _mainPadding,
-        child: BlocBuilder<HomeCubit, HomeState>(
-          builder: (context, state) {
-            return switch (state) {
-              Error() => BigText('Error: ${state.error}'),
-              Loading() => const BigText('Loading...'),
-              Loaded() => _LoadedWidget(state: state),
-            };
-          },
+    return BlocProvider(
+      create: (context) => HomeCubit(context.read())
+        ..getNextPage(lookupProductId: lookupProductId),
+      child: Scaffold(
+        appBar: AppBar(
+          title: const BigText('Products'),
+        ),
+        body: Padding(
+          padding: _mainPadding,
+          child: BlocBuilder<HomeCubit, HomeState>(
+            builder: (context, state) {
+              return switch (state) {
+                Error() => BigText('Error: ${state.error}'),
+                Loading() => const BigText('Loading...'),
+                Loaded() => _LoadedWidget(
+                    state: state,
+                  ),
+              };
+            },
+          ),
         ),
       ),
     );
   }
 }
 
-class _LoadedWidget extends StatelessWidget {
+class _LoadedWidget extends StatefulWidget {
   const _LoadedWidget({
     required this.state,
   });
@@ -41,12 +54,53 @@ class _LoadedWidget extends StatelessWidget {
   final Loaded state;
 
   @override
+  State<_LoadedWidget> createState() => _LoadedWidgetState();
+}
+
+class _LoadedWidgetState extends State<_LoadedWidget> {
+  late final _scrollController = ScrollController();
+  late final _observerController =
+      SliverObserverController(controller: _scrollController);
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.state.initialProductIndex != null) {
+      _observerController.initialIndex = widget.state.initialProductIndex!;
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant _LoadedWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.state.initialProductIndex !=
+        oldWidget.state.initialProductIndex) {
+      _scrollToLookupProduct();
+    }
+  }
+
+  void _scrollToLookupProduct() {
+    final index = widget.state.initialProductIndex;
+    if (index != null) {
+      _observerController.animateTo(
+        index: index,
+        duration: kThemeAnimationDuration,
+        curve: Curves.ease,
+      );
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return CustomScrollView(
-      slivers: [
-        _ProductsSliverList(state: state),
-        const _GetNextPageButton(),
-      ],
+    return SliverViewObserver(
+      controller: _observerController,
+      child: CustomScrollView(
+        controller: _scrollController,
+        slivers: [
+          _ProductsSliverList(state: widget.state),
+          if (widget.state.nextPageIndex != null) const _GetNextPageButton(),
+        ],
+      ),
     );
   }
 }
@@ -58,14 +112,13 @@ class _ProductsSliverList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final products = state.pages
-        .map((page) => page.products)
-        .expand((product) => product)
-        .toList();
+    final products = state.products;
 
     return SliverList.separated(
       itemCount: products.length,
-      itemBuilder: (context, index) => _ProductCard(products[index]),
+      itemBuilder: (context, index) => _ProductCard(
+        products[index],
+      ),
       separatorBuilder: (context, index) => const Divider(),
     );
   }
