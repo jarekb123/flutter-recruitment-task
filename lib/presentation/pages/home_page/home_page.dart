@@ -105,21 +105,26 @@ class _Tags extends StatelessWidget {
   }
 }
 
-class _TagWidget extends StatelessWidget {
+class _TagWidget extends StatefulWidget {
   const _TagWidget(this.tag);
 
   final Tag tag;
 
   @override
-  Widget build(BuildContext context) {
-    const possibleColors = Colors.primaries;
-    final color = possibleColors[Random().nextInt(possibleColors.length)];
+  State<_TagWidget> createState() => _TagWidgetState();
+}
 
+class _TagWidgetState extends State<_TagWidget> {
+  late final _color =
+      Colors.primaries[Random().nextInt(Colors.primaries.length)];
+
+  @override
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 4),
       child: Chip(
-        color: MaterialStateProperty.all(color),
-        label: Text(tag.label),
+        color: MaterialStateProperty.all(_color),
+        label: Text(widget.tag.label),
       ),
     );
   }
