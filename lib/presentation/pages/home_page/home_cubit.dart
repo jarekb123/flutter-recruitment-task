@@ -5,33 +5,20 @@ import 'package:flutter_recruitment_task/models/get_products_page.dart';
 import 'package:flutter_recruitment_task/models/products_page.dart';
 import 'package:flutter_recruitment_task/presentation/pages/filters_page/filters_cubit.dart';
 import 'package:flutter_recruitment_task/repositories/products_repository.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-sealed class HomeState {
-  const HomeState();
-}
+part 'home_cubit.freezed.dart';
 
-class Loading extends HomeState {
-  const Loading();
-}
-
-class Loaded extends HomeState {
-  const Loaded({
-    required this.products,
-    this.initialProductIndex,
-    required this.nextPageIndex,
-    this.filters,
-  });
-
-  final List<Product> products;
-  final int? initialProductIndex;
-  final int? nextPageIndex;
-  final ProductsFilters? filters;
-}
-
-class Error extends HomeState {
-  const Error({required this.error});
-
-  final dynamic error;
+@freezed
+sealed class HomeState with _$HomeState {
+  const factory HomeState.loading() = Loading;
+  const factory HomeState.loaded({
+    required List<Product> products,
+    int? initialProductIndex,
+    int? nextPageIndex,
+    ProductsFilters? filters,
+  }) = Loaded;
+  const factory HomeState.error({required dynamic error}) = Error;
 }
 
 class _PaginatedResult<T> {
@@ -54,13 +41,8 @@ class HomeCubit extends ListenerCubit<HomeState, ProductsFilters> {
     /// If the filter are applied, we should fetch the first page
     /// with the applied filters.
     _getPage(
-      request: GetProductsPage(
-        pageNumber: 1,
-        availableOnly: message.availableOnly,
-        bestOnly: message.bestOnly,
-        favoritesOnly: message.favoritesOnly,
-        searchQuery: message.searchQuery,
-      ),
+      pageNumber: 1,
+      filters: message,
     );
   }
 
@@ -71,7 +53,7 @@ class HomeCubit extends ListenerCubit<HomeState, ProductsFilters> {
     if (state is Loading) {
       // first page
       await _getPage(
-        request: GetProductsPage(pageNumber: 1),
+        pageNumber: 1,
         lookupProductId: lookupProductId,
       );
     } else if (state is Loaded) {
@@ -82,57 +64,67 @@ class HomeCubit extends ListenerCubit<HomeState, ProductsFilters> {
 
       // next page (may contain the applied filters)
       await _getPage(
-        request: GetProductsPage(
-          pageNumber: nextPageIndex,
-          availableOnly: state.filters?.availableOnly ?? false,
-          bestOnly: state.filters?.bestOnly ?? false,
-          favoritesOnly: state.filters?.favoritesOnly ?? false,
-          searchQuery: state.filters?.searchQuery,
-        ),
+        pageNumber: nextPageIndex,
+        filters: state.filters,
         lookupProductId: lookupProductId,
       );
     }
   }
 
   Future<void> _getPage({
-    required GetProductsPage request,
+    required int pageNumber,
+    ProductsFilters? filters,
     String? lookupProductId,
   }) async {
-    final page = await _request(request);
+    try {
+      final page = await _request(
+        GetProductsPage(
+          pageNumber: pageNumber,
+          availableOnly: filters?.availableOnly ?? false,
+          bestOnly: filters?.bestOnly ?? false,
+          favoritesOnly: filters?.favoritesOnly ?? false,
+          searchQuery: filters?.searchQuery,
+        ),
+      );
 
-    /// Clear the list of fetched products if the page number is 1
-    final fetchedProducts = request.pageNumber == 1
-        ? <Product>[]
-        : switch (state) {
-            Loaded state => state.products,
-            _ => <Product>[],
-          };
-    final products = [
-      ...fetchedProducts,
-      ...page.items,
-    ];
+      /// Clear the list of fetched products if the page number is 1
+      final fetchedProducts = pageNumber == 1
+          ? <Product>[]
+          : switch (state) {
+              Loaded state => state.products,
+              _ => <Product>[],
+            };
+      final products = [
+        ...fetchedProducts,
+        ...page.items,
+      ];
 
-    final lookupProductIndex = lookupProductId != null
-        ? _getIndexForProduct(lookupProductId, products)
-        : null;
+      final lookupProductIndex = lookupProductId != null
+          ? _getIndexForProduct(lookupProductId, products)
+          : null;
 
-    emit(
-      Loaded(
-        products: products,
-        initialProductIndex: lookupProductIndex,
-        nextPageIndex: page.nextPageIndex,
-      ),
-    );
+      emit(
+        Loaded(
+          products: products,
+          initialProductIndex: lookupProductIndex,
+          nextPageIndex: page.nextPageIndex,
+          filters: filters,
+        ),
+      );
 
-    /// Automatically fetch the next page if the lookup product is not found
-    if (lookupProductId != null && lookupProductIndex == null) {
-      final nextPageIndex = page.nextPageIndex;
-      if (nextPageIndex != null) {
-        _getPage(
-          request: request.copyWith(pageNumber: nextPageIndex),
-          lookupProductId: lookupProductId,
-        );
+      /// Automatically fetch the next page if the lookup product is not found
+      if (lookupProductId != null && lookupProductIndex == null) {
+        final nextPageIndex = page.nextPageIndex;
+        if (nextPageIndex != null) {
+          _getPage(
+            pageNumber: nextPageIndex,
+            filters: filters,
+            lookupProductId: lookupProductId,
+          );
+        }
       }
+    } catch (e) {
+      emit(Error(error: e));
     }
   }
 

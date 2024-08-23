@@ -1,32 +1,14 @@
-class GetProductsPage {
-  GetProductsPage({
-    required this.pageNumber,
-    this.searchQuery,
-    this.favoritesOnly = false,
-    this.availableOnly = false,
-    this.bestOnly = false,
-  });
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  final int pageNumber;
+part 'get_products_page.freezed.dart';
 
-  final String? searchQuery;
-  final bool favoritesOnly;
-  final bool availableOnly;
-  final bool bestOnly;
-
-  GetProductsPage copyWith({
-    int? pageNumber,
+@freezed
+class GetProductsPage with _$GetProductsPage {
+  const factory GetProductsPage({
+    required int pageNumber,
     String? searchQuery,
-    bool? favoritesOnly,
-    bool? availableOnly,
-    bool? bestOnly,
-  }) {
-    return GetProductsPage(
-      pageNumber: pageNumber ?? this.pageNumber,
-      searchQuery: searchQuery ?? this.searchQuery,
-      favoritesOnly: favoritesOnly ?? this.favoritesOnly,
-      availableOnly: availableOnly ?? this.availableOnly,
-      bestOnly: bestOnly ?? this.bestOnly,
-    );
-  }
+    @Default(false) bool favoritesOnly,
+    @Default(false) bool availableOnly,
+    @Default(false) bool bestOnly,
+  }) = _GetProductsPage;
 }

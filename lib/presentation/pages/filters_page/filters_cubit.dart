@@ -1,32 +1,17 @@
 import 'package:comms/comms.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class ProductsFilters {
-  final bool favoritesOnly;
-  final bool availableOnly;
-  final bool bestOnly;
-  final String? searchQuery;
+part 'filters_cubit.freezed.dart';
 
-  ProductsFilters({
-    required this.favoritesOnly,
-    required this.availableOnly,
-    required this.bestOnly,
-    required this.searchQuery,
-  });
-
-  ProductsFilters copyWith({
-    bool? favoritesOnly,
-    bool? availableOnly,
-    bool? bestOnly,
-    String? searchQuery,
-  }) {
-    return ProductsFilters(
-      favoritesOnly: favoritesOnly ?? this.favoritesOnly,
-      availableOnly: availableOnly ?? this.availableOnly,
-      bestOnly: bestOnly ?? this.bestOnly,
-      searchQuery: searchQuery ?? this.searchQuery,
-    );
-  }
+@freezed
+class ProductsFilters with _$ProductsFilters {
+  const factory ProductsFilters({
+    required bool favoritesOnly,
+    required bool availableOnly,
+    required bool bestOnly,
+    required String? searchQuery,
+  }) = _ProductsFilters;
 }
 
 class FiltersCubit extends Cubit<ProductsFilters> with Sender<ProductsFilters> {
@@ -34,7 +19,7 @@ class FiltersCubit extends Cubit<ProductsFilters> with Sender<ProductsFilters> {
     ProductsFilters? initialFilters,
   }) : super(
           initialFilters ??
-              ProductsFilters(
+              const ProductsFilters(
                 favoritesOnly: false,
                 availableOnly: false,
                 bestOnly: false,

@@ -8,19 +8,23 @@ environment:
 
 dependencies:
   bloc: 8.1.4
-  comms: ^1.1.0
+  comms: 1.1.0
   flutter:
     sdk: flutter
   flutter_bloc: 8.1.6
+  freezed_annotation: ^2.4.4
   json_annotation: 4.9.0
   json_serializable: 6.8.0
   scrollview_observer: 1.21.0
 
 dev_dependencies:
+  bloc_test: 9.1.7
   build_runner: 2.3.3
   flutter_lints: 4.0.0
   flutter_test:
     sdk: flutter
+  freezed: 2.5.2
+  mocktail: 1.0.4
 
 flutter:
   uses-material-design: true
