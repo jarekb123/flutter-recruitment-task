@@ -19,7 +19,7 @@ class App extends StatelessWidget {
       child: BlocProvider(
         create: (context) => FiltersCubit(),
         child: const MaterialApp(
-          home: HomePage(),
+          home: HomePage(lookupProductId: '913'),
         ),
       ),
     );
