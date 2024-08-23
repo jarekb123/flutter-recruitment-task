@@ -51,7 +51,7 @@ class MockedProductsRepository implements ProductsRepository {
       return false;
     }
 
-    if (request.availableOnly && product.available) {
+    if (request.availableOnly && !product.available) {
       return false;
     }
 
