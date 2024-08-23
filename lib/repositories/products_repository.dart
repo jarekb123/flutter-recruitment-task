@@ -47,7 +47,7 @@ class MockedProductsRepository implements ProductsRepository {
   }
 
   bool _applyFilter(Product product, GetProductsPage request) {
-    if (request.favoritesOnly && (product.isFavorite ?? false)) {
+    if (request.favoritesOnly && product.isFavorite == false) {
       return false;
     }
 
@@ -55,7 +55,7 @@ class MockedProductsRepository implements ProductsRepository {
       return false;
     }
 
-    if (request.bestOnly && (product.offer.isBest ?? false)) {
+    if (request.bestOnly && product.offer.isBest == false) {
       return false;
     }
 

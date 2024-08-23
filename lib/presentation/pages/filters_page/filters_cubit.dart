@@ -39,10 +39,6 @@ class FiltersCubit extends Cubit<ProductsFilters> with Sender<ProductsFilters> {
     emit(state.copyWith(bestOnly: !state.bestOnly));
   }
 
-  void setSearchQuery(String searchQuery) {
-    emit(state.copyWith(searchQuery: searchQuery));
-  }
-
   void save() {
     send(state);
   }

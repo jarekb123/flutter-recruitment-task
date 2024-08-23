@@ -12,42 +12,45 @@ class FiltersPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final filtersCubit = context.watch<FiltersCubit>();
-    final filtersState = filtersCubit.state;
-
     return BlocProvider(
-      create: (context) => FiltersCubit(),
+      create: (context) => FiltersCubit(
+        initialFilters: appliedFilters,
+      ),
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Filters'),
         ),
-        body: Column(
-          children: [
-            CheckboxListTile(
-              value: filtersState.favoritesOnly,
-              onChanged: (_) => filtersCubit.toggleFavoritesOnly(),
-              title: const Text('Favorites only'),
-            ),
-            CheckboxListTile(
-              value: filtersState.availableOnly,
-              onChanged: (_) => filtersCubit.toggleAvailableOnly(),
-              title: const Text('Available only'),
-            ),
-            CheckboxListTile(
-              value: filtersState.bestOnly,
-              onChanged: (_) => filtersCubit.toggleBestOnly(),
-              title: const Text('Best only'),
-            ),
-            const Spacer(),
-            ElevatedButton(
-              onPressed: () {
-                filtersCubit.save();
-                Navigator.of(context).pop();
-              },
-              child: const Text('Zastosuj filtry'),
-            ),
-            const SizedBox(height: 24),
-          ],
+        body: BlocBuilder<FiltersCubit, ProductsFilters>(
+          builder: (context, filtersState) => Column(
+            children: [
+              CheckboxListTile(
+                value: filtersState.favoritesOnly,
+                onChanged: (_) =>
+                    context.read<FiltersCubit>().toggleFavoritesOnly(),
+                title: const Text('Favorites only'),
+              ),
+              CheckboxListTile(
+                value: filtersState.availableOnly,
+                onChanged: (_) =>
+                    context.read<FiltersCubit>().toggleAvailableOnly(),
+                title: const Text('Available only'),
+              ),
+              CheckboxListTile(
+                value: filtersState.bestOnly,
+                onChanged: (_) => context.read<FiltersCubit>().toggleBestOnly(),
+                title: const Text('Best only'),
+              ),
+              const Spacer(),
+              ElevatedButton(
+                onPressed: () {
+                  context.read<FiltersCubit>().save();
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Zastosuj filtry'),
+              ),
+              const SizedBox(height: 24),
+            ],
+          ),
         ),
       ),
     );
