@@ -134,16 +134,19 @@ class __$$ProductsFiltersImplCopyWithImpl<$Res>
 
 class _$ProductsFiltersImpl implements _ProductsFilters {
   const _$ProductsFiltersImpl(
-      {required this.favoritesOnly,
-      required this.availableOnly,
-      required this.bestOnly,
+      {this.favoritesOnly = false,
+      this.availableOnly = false,
+      this.bestOnly = false,
       required this.searchQuery});
 
   @override
+  @JsonKey()
   final bool favoritesOnly;
   @override
+  @JsonKey()
   final bool availableOnly;
   @override
+  @JsonKey()
   final bool bestOnly;
   @override
   final String? searchQuery;
@@ -182,9 +185,9 @@ class _$ProductsFiltersImpl implements _ProductsFilters {
 
 abstract class _ProductsFilters implements ProductsFilters {
   const factory _ProductsFilters(
-      {required final bool favoritesOnly,
-      required final bool availableOnly,
-      required final bool bestOnly,
+      {final bool favoritesOnly,
+      final bool availableOnly,
+      final bool bestOnly,
       required final String? searchQuery}) = _$ProductsFiltersImpl;
 
   @override

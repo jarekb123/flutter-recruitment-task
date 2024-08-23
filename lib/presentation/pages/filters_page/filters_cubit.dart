@@ -7,9 +7,9 @@ part 'filters_cubit.freezed.dart';
 @freezed
 class ProductsFilters with _$ProductsFilters {
   const factory ProductsFilters({
-    required bool favoritesOnly,
-    required bool availableOnly,
-    required bool bestOnly,
+    @Default(false) bool favoritesOnly,
+    @Default(false) bool availableOnly,
+    @Default(false) bool bestOnly,
     required String? searchQuery,
   }) = _ProductsFilters;
 }

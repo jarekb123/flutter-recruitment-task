@@ -71,6 +71,26 @@ class HomeCubit extends ListenerCubit<HomeState, ProductsFilters> {
     }
   }
 
+  Future<void> search(String query) async {
+    final state = this.state;
+    if (state is Loaded) {
+      await _getPage(
+        pageNumber: 1,
+        filters: state.filters?.copyWith(searchQuery: query) ??
+            ProductsFilters(searchQuery: query),
+      );
+    } else {
+      await _getPage(
+        pageNumber: 1,
+        filters: ProductsFilters(searchQuery: query),
+      );
+    }
+  }
+
+  /// What can be improved?
+  ///
+  /// * Automatically fetch next page if the filtered page is empty
+  /// * Extract the lookup product logic to a separate cubit
   Future<void> _getPage({
     required int pageNumber,
     ProductsFilters? filters,

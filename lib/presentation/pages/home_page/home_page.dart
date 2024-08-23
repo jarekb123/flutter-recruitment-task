@@ -6,6 +6,7 @@ import 'package:flutter_recruitment_task/models/products_page.dart';
 import 'package:flutter_recruitment_task/presentation/pages/filters_page/filters_page.dart';
 import 'package:flutter_recruitment_task/presentation/pages/home_page/home_cubit.dart';
 import 'package:flutter_recruitment_task/presentation/widgets/big_text.dart';
+import 'package:flutter_recruitment_task/presentation/widgets/search_bar.dart';
 import 'package:scrollview_observer/scrollview_observer.dart';
 
 const _mainPadding = EdgeInsets.all(16.0);
@@ -129,6 +130,11 @@ class _LoadedWidgetState extends State<_LoadedWidget> {
       child: CustomScrollView(
         controller: _scrollController,
         slivers: [
+          SliverToBoxAdapter(
+            child: SearchField(
+              onSearch: (value) => context.read<HomeCubit>().search(value),
+            ),
+          ),
           _ProductsSliverList(state: widget.state),
           if (widget.state.nextPageIndex != null) const _GetNextPageButton(),
         ],
