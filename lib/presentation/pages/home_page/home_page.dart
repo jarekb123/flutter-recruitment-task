@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_recruitment_task/models/products_page.dart';
+import 'package:flutter_recruitment_task/presentation/pages/filters_page/filters_page.dart';
 import 'package:flutter_recruitment_task/presentation/pages/home_page/home_cubit.dart';
 import 'package:flutter_recruitment_task/presentation/widgets/big_text.dart';
 import 'package:scrollview_observer/scrollview_observer.dart';
@@ -26,6 +27,9 @@ class HomePage extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           title: const BigText('Products'),
+          actions: const [
+            _FiltersIcon(),
+          ],
         ),
         body: Padding(
           padding: _mainPadding,
@@ -46,12 +50,40 @@ class HomePage extends StatelessWidget {
   }
 }
 
+class _FiltersIcon extends StatelessWidget {
+  const _FiltersIcon();
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      icon: const Icon(Icons.filter_alt),
+      onPressed: () {
+        final state = context.read<HomeCubit>().state;
+        final appliedFilters = switch (state) {
+          Loaded() => state.filters,
+          _ => null,
+        };
+
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => FiltersPage(
+              appliedFilters: appliedFilters,
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
 class _LoadedWidget extends StatefulWidget {
   const _LoadedWidget({
     required this.state,
+    this.lookupProductId,
   });
 
   final Loaded state;
+  final String? lookupProductId;
 
   @override
   State<_LoadedWidget> createState() => _LoadedWidgetState();

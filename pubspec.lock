@@ -153,6 +153,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.18.0"
+  comms:
+    dependency: "direct main"
+    description:
+      name: comms
+      sha256: "30a30a1a55adbcd8944d4073149f5d6e6519dfe2e8fc6323daab6025f74e14bd"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.0"
   convert:
     dependency: transitive
     description:
