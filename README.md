@@ -1,5 +1,9 @@
 # flutter_recruitment_task
 
+## jareb123 implementation 
+
+https://github.com/user-attachments/assets/57289f36-068b-483c-b100-7057a17e133f
+
 ## Uczestnictwo w zadaniu rekrutacyjnym
 Aby wziąć udział w zadaniu rekrutacyjnym należy sforkować to repozytorium, wykonać zadania oraz wypushować swoje zmiany.
 
@@ -45,3 +49,5 @@ Stwórz unit testy dla HomeCubit.
 This project uses Flutter in version 3.19.0
 
 Project uses build_runner, to generate code use command `flutter pub run build_runner build --delete-conflicting-outputs`
+
+
