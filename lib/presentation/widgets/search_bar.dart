@@ -12,6 +12,7 @@ class SearchField extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextField(
       onChanged: onSearch,
+      onTapOutside: (event) => FocusScope.of(context).unfocus(),
       textInputAction: TextInputAction.search,
       decoration: const InputDecoration(
         hintText: 'Search...',
