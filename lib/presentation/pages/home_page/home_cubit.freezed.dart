@@ -19,8 +19,8 @@ mixin _$HomeState {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() loading,
-    required TResult Function(List<Product> products, int? initialProductIndex,
-            int? nextPageIndex, ProductsFilters? filters)
+    required TResult Function(List<Product> products, int? nextPageIndex,
+            ProductsFilters? filters)
         loaded,
     required TResult Function(dynamic error) error,
   }) =>
@@ -28,8 +28,8 @@ mixin _$HomeState {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? loading,
-    TResult? Function(List<Product> products, int? initialProductIndex,
-            int? nextPageIndex, ProductsFilters? filters)?
+    TResult? Function(List<Product> products, int? nextPageIndex,
+            ProductsFilters? filters)?
         loaded,
     TResult? Function(dynamic error)? error,
   }) =>
@@ -37,8 +37,8 @@ mixin _$HomeState {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? loading,
-    TResult Function(List<Product> products, int? initialProductIndex,
-            int? nextPageIndex, ProductsFilters? filters)?
+    TResult Function(List<Product> products, int? nextPageIndex,
+            ProductsFilters? filters)?
         loaded,
     TResult Function(dynamic error)? error,
     required TResult orElse(),
@@ -124,8 +124,8 @@ class _$LoadingImpl implements Loading {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() loading,
-    required TResult Function(List<Product> products, int? initialProductIndex,
-            int? nextPageIndex, ProductsFilters? filters)
+    required TResult Function(List<Product> products, int? nextPageIndex,
+            ProductsFilters? filters)
         loaded,
     required TResult Function(dynamic error) error,
   }) {
@@ -136,8 +136,8 @@ class _$LoadingImpl implements Loading {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? loading,
-    TResult? Function(List<Product> products, int? initialProductIndex,
-            int? nextPageIndex, ProductsFilters? filters)?
+    TResult? Function(List<Product> products, int? nextPageIndex,
+            ProductsFilters? filters)?
         loaded,
     TResult? Function(dynamic error)? error,
   }) {
@@ -148,8 +148,8 @@ class _$LoadingImpl implements Loading {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? loading,
-    TResult Function(List<Product> products, int? initialProductIndex,
-            int? nextPageIndex, ProductsFilters? filters)?
+    TResult Function(List<Product> products, int? nextPageIndex,
+            ProductsFilters? filters)?
         loaded,
     TResult Function(dynamic error)? error,
     required TResult orElse(),
@@ -206,10 +206,7 @@ abstract class _$$LoadedImplCopyWith<$Res> {
       __$$LoadedImplCopyWithImpl<$Res>;
   @useResult
   $Res call(
-      {List<Product> products,
-      int? initialProductIndex,
-      int? nextPageIndex,
-      ProductsFilters? filters});
+      {List<Product> products, int? nextPageIndex, ProductsFilters? filters});
 
   $ProductsFiltersCopyWith<$Res>? get filters;
 }
@@ -226,7 +223,6 @@ class __$$LoadedImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? products = null,
-    Object? initialProductIndex = freezed,
     Object? nextPageIndex = freezed,
     Object? filters = freezed,
   }) {
@@ -235,10 +231,6 @@ class __$$LoadedImplCopyWithImpl<$Res>
           ? _value._products
           : products // ignore: cast_nullable_to_non_nullable
               as List<Product>,
-      initialProductIndex: freezed == initialProductIndex
-          ? _value.initialProductIndex
-          : initialProductIndex // ignore: cast_nullable_to_non_nullable
-              as int?,
       nextPageIndex: freezed == nextPageIndex
           ? _value.nextPageIndex
           : nextPageIndex // ignore: cast_nullable_to_non_nullable
@@ -267,10 +259,7 @@ class __$$LoadedImplCopyWithImpl<$Res>
 
 class _$LoadedImpl implements Loaded {
   const _$LoadedImpl(
-      {required final List<Product> products,
-      this.initialProductIndex,
-      this.nextPageIndex,
-      this.filters})
+      {required final List<Product> products, this.nextPageIndex, this.filters})
       : _products = products;
 
   final List<Product> _products;
@@ -282,15 +271,13 @@ class _$LoadedImpl implements Loaded {
   }
 
   @override
-  final int? initialProductIndex;
-  @override
   final int? nextPageIndex;
   @override
   final ProductsFilters? filters;
 
   @override
   String toString() {
-    return 'HomeState.loaded(products: $products, initialProductIndex: $initialProductIndex, nextPageIndex: $nextPageIndex, filters: $filters)';
+    return 'HomeState.loaded(products: $products, nextPageIndex: $nextPageIndex, filters: $filters)';
   }
 
   @override
@@ -299,20 +286,14 @@ class _$LoadedImpl implements Loaded {
         (other.runtimeType == runtimeType &&
             other is _$LoadedImpl &&
             const DeepCollectionEquality().equals(other._products, _products) &&
-            (identical(other.initialProductIndex, initialProductIndex) ||
-                other.initialProductIndex == initialProductIndex) &&
             (identical(other.nextPageIndex, nextPageIndex) ||
                 other.nextPageIndex == nextPageIndex) &&
             (identical(other.filters, filters) || other.filters == filters));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      const DeepCollectionEquality().hash(_products),
-      initialProductIndex,
-      nextPageIndex,
-      filters);
+  int get hashCode => Object.hash(runtimeType,
+      const DeepCollectionEquality().hash(_products), nextPageIndex, filters);
 
   @JsonKey(ignore: true)
   @override
@@ -324,38 +305,38 @@ class _$LoadedImpl implements Loaded {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() loading,
-    required TResult Function(List<Product> products, int? initialProductIndex,
-            int? nextPageIndex, ProductsFilters? filters)
+    required TResult Function(List<Product> products, int? nextPageIndex,
+            ProductsFilters? filters)
         loaded,
     required TResult Function(dynamic error) error,
   }) {
-    return loaded(products, initialProductIndex, nextPageIndex, filters);
+    return loaded(products, nextPageIndex, filters);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? loading,
-    TResult? Function(List<Product> products, int? initialProductIndex,
-            int? nextPageIndex, ProductsFilters? filters)?
+    TResult? Function(List<Product> products, int? nextPageIndex,
+            ProductsFilters? filters)?
         loaded,
     TResult? Function(dynamic error)? error,
   }) {
-    return loaded?.call(products, initialProductIndex, nextPageIndex, filters);
+    return loaded?.call(products, nextPageIndex, filters);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? loading,
-    TResult Function(List<Product> products, int? initialProductIndex,
-            int? nextPageIndex, ProductsFilters? filters)?
+    TResult Function(List<Product> products, int? nextPageIndex,
+            ProductsFilters? filters)?
         loaded,
     TResult Function(dynamic error)? error,
     required TResult orElse(),
   }) {
     if (loaded != null) {
-      return loaded(products, initialProductIndex, nextPageIndex, filters);
+      return loaded(products, nextPageIndex, filters);
     }
     return orElse();
   }
@@ -398,12 +379,10 @@ class _$LoadedImpl implements Loaded {
 abstract class Loaded implements HomeState {
   const factory Loaded(
       {required final List<Product> products,
-      final int? initialProductIndex,
       final int? nextPageIndex,
       final ProductsFilters? filters}) = _$LoadedImpl;
 
   List<Product> get products;
-  int? get initialProductIndex;
   int? get nextPageIndex;
   ProductsFilters? get filters;
   @JsonKey(ignore: true)
@@ -477,8 +456,8 @@ class _$ErrorImpl implements Error {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() loading,
-    required TResult Function(List<Product> products, int? initialProductIndex,
-            int? nextPageIndex, ProductsFilters? filters)
+    required TResult Function(List<Product> products, int? nextPageIndex,
+            ProductsFilters? filters)
         loaded,
     required TResult Function(dynamic error) error,
   }) {
@@ -489,8 +468,8 @@ class _$ErrorImpl implements Error {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? loading,
-    TResult? Function(List<Product> products, int? initialProductIndex,
-            int? nextPageIndex, ProductsFilters? filters)?
+    TResult? Function(List<Product> products, int? nextPageIndex,
+            ProductsFilters? filters)?
         loaded,
     TResult? Function(dynamic error)? error,
   }) {
@@ -501,8 +480,8 @@ class _$ErrorImpl implements Error {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? loading,
-    TResult Function(List<Product> products, int? initialProductIndex,
-            int? nextPageIndex, ProductsFilters? filters)?
+    TResult Function(List<Product> products, int? nextPageIndex,
+            ProductsFilters? filters)?
         loaded,
     TResult Function(dynamic error)? error,
     required TResult orElse(),

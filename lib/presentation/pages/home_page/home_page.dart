@@ -7,24 +7,23 @@ import 'package:flutter_recruitment_task/presentation/pages/filters_page/filters
 import 'package:flutter_recruitment_task/presentation/pages/home_page/home_cubit.dart';
 import 'package:flutter_recruitment_task/presentation/widgets/big_text.dart';
 import 'package:flutter_recruitment_task/presentation/widgets/search_bar.dart';
-import 'package:scrollview_observer/scrollview_observer.dart';
+import 'package:flutter_recruitment_task/utils/scroll_to_item/scroll_to_item.dart';
 
 const _mainPadding = EdgeInsets.all(16.0);
 
 class HomePage extends StatelessWidget {
   const HomePage({
     super.key,
-    this.lookupProductId,
+    this.findProductId,
   });
 
   /// The ID of the product to be scrolled to when the page is opened.
-  final String? lookupProductId;
+  final String? findProductId;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => HomeCubit(context.read())
-        ..getNextPage(lookupProductId: lookupProductId),
+      create: (context) => HomeCubit(context.read())..getNextPage(),
       child: Scaffold(
         appBar: AppBar(
           title: const BigText('Products'),
@@ -41,6 +40,7 @@ class HomePage extends StatelessWidget {
                 Loading() => const BigText('Loading...'),
                 Loaded() => _LoadedWidget(
                     state: state,
+                    findProductId: findProductId,
                   ),
               };
             },
@@ -80,11 +80,11 @@ class _FiltersIcon extends StatelessWidget {
 class _LoadedWidget extends StatefulWidget {
   const _LoadedWidget({
     required this.state,
-    this.lookupProductId,
+    this.findProductId,
   });
 
   final Loaded state;
-  final String? lookupProductId;
+  final String? findProductId;
 
   @override
   State<_LoadedWidget> createState() => _LoadedWidgetState();
@@ -92,41 +92,15 @@ class _LoadedWidget extends StatefulWidget {
 
 class _LoadedWidgetState extends State<_LoadedWidget> {
   late final _scrollController = ScrollController();
-  late final _observerController =
-      SliverObserverController(controller: _scrollController);
-
-  @override
-  void initState() {
-    super.initState();
-    if (widget.state.initialProductIndex != null) {
-      _observerController.initialIndex = widget.state.initialProductIndex!;
-    }
-  }
-
-  @override
-  void didUpdateWidget(covariant _LoadedWidget oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (widget.state.initialProductIndex !=
-        oldWidget.state.initialProductIndex) {
-      _scrollToLookupProduct();
-    }
-  }
-
-  void _scrollToLookupProduct() {
-    final index = widget.state.initialProductIndex;
-    if (index != null) {
-      _observerController.animateTo(
-        index: index,
-        duration: kThemeAnimationDuration,
-        curve: Curves.ease,
-      );
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
-    return SliverViewObserver(
-      controller: _observerController,
+    return ScrollToItem<Product>(
+      hasMoreItems: widget.state.nextPageIndex != null,
+      controller: _scrollController,
+      items: widget.state.products,
+      onRequestNextPage: () => context.read<HomeCubit>().getNextPage(),
+      searchFn: (product) => product.id == widget.findProductId,
       child: CustomScrollView(
         controller: _scrollController,
         slivers: [

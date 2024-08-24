@@ -30,7 +30,6 @@ void main() {
 
   final productsPage1 = generateProducts();
   final productsPage2 = generateProducts(10);
-  final productsPage3 = generateProducts(20);
 
   blocTest<HomeCubit, HomeState>(
     'emits products with non-null nextPageIndex when has more pages',
@@ -75,92 +74,6 @@ void main() {
     act: (bloc) => bloc.getNextPage(),
     expect: () => [
       Loaded(products: productsPage1, nextPageIndex: null),
-    ],
-  );
-
-  blocTest<HomeCubit, HomeState>(
-    'looks up product id when provided',
-    build: build,
-    setUp: () {
-      when(
-        () => repository.getProductsPage(
-          const GetProductsPage(pageNumber: 1),
-        ),
-      ).thenAnswer(
-        (_) async => ProductsPage(
-          products: productsPage1,
-          pageNumber: 1,
-          totalPages: 1,
-          pageSize: 10,
-        ),
-      );
-    },
-    act: (bloc) => bloc.getNextPage(lookupProductId: '5'),
-    expect: () => [
-      Loaded(
-        products: productsPage1,
-        initialProductIndex: 5,
-        nextPageIndex: null,
-      ),
-    ],
-  );
-
-  blocTest<HomeCubit, HomeState>(
-    'fetches next pages until lookup product is found',
-    build: build,
-    setUp: () {
-      when(
-        () => repository.getProductsPage(
-          const GetProductsPage(pageNumber: 1),
-        ),
-      ).thenAnswer(
-        (_) async => ProductsPage(
-          products: productsPage1,
-          pageNumber: 1,
-          totalPages: 3,
-          pageSize: 10,
-        ),
-      );
-      when(
-        () => repository.getProductsPage(
-          const GetProductsPage(pageNumber: 2),
-        ),
-      ).thenAnswer(
-        (_) async => ProductsPage(
-          products: productsPage2,
-          pageNumber: 2,
-          totalPages: 3,
-          pageSize: 10,
-        ),
-      );
-      when(
-        () => repository.getProductsPage(
-          const GetProductsPage(pageNumber: 3),
-        ),
-      ).thenAnswer(
-        (_) async => ProductsPage(
-          products: productsPage3,
-          pageNumber: 3,
-          totalPages: 3,
-          pageSize: 10,
-        ),
-      );
-    },
-    act: (bloc) => bloc.getNextPage(lookupProductId: '25'),
-    expect: () => [
-      Loaded(
-        products: productsPage1,
-        nextPageIndex: 2,
-      ),
-      Loaded(
-        products: [...productsPage1, ...productsPage2],
-        nextPageIndex: 3,
-      ),
-      Loaded(
-        products: [...productsPage1, ...productsPage2, ...productsPage3],
-        initialProductIndex: 25,
-        nextPageIndex: null,
-      ),
     ],
   );
 

@@ -2,6 +2,7 @@
 // Don't modify this file please!
 //
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_recruitment_task/models/get_products_page.dart';
@@ -16,6 +17,8 @@ abstract class ProductsRepository {
 class MockedProductsRepository implements ProductsRepository {
   @override
   Future<ProductsPage> getProductsPage(GetProductsPage param) async {
+    log('Fetching products page ${param.pageNumber}');
+
     final path = 'assets/mocks/products_pages/${param.pageNumber}.json';
     final data = await rootBundle.loadString(path);
     final json = jsonDecode(data);

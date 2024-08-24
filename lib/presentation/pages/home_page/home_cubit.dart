@@ -14,7 +14,6 @@ sealed class HomeState with _$HomeState {
   const factory HomeState.loading() = Loading;
   const factory HomeState.loaded({
     required List<Product> products,
-    int? initialProductIndex,
     int? nextPageIndex,
     ProductsFilters? filters,
   }) = Loaded;
@@ -46,15 +45,12 @@ class HomeCubit extends ListenerCubit<HomeState, ProductsFilters> {
     );
   }
 
-  Future<void> getNextPage({
-    String? lookupProductId,
-  }) async {
+  Future<void> getNextPage() async {
     final state = this.state;
     if (state is Loading) {
       // first page
       await _getPage(
         pageNumber: 1,
-        lookupProductId: lookupProductId,
       );
     } else if (state is Loaded) {
       final nextPageIndex = state.nextPageIndex;
@@ -66,7 +62,6 @@ class HomeCubit extends ListenerCubit<HomeState, ProductsFilters> {
       await _getPage(
         pageNumber: nextPageIndex,
         filters: state.filters,
-        lookupProductId: lookupProductId,
       );
     }
   }
@@ -94,7 +89,6 @@ class HomeCubit extends ListenerCubit<HomeState, ProductsFilters> {
   Future<void> _getPage({
     required int pageNumber,
     ProductsFilters? filters,
-    String? lookupProductId,
   }) async {
     try {
       final page = await _request(
@@ -119,30 +113,13 @@ class HomeCubit extends ListenerCubit<HomeState, ProductsFilters> {
         ...page.items,
       ];
 
-      final lookupProductIndex = lookupProductId != null
-          ? _getIndexForProduct(lookupProductId, products)
-          : null;
-
       emit(
         Loaded(
           products: products,
-          initialProductIndex: lookupProductIndex,
           nextPageIndex: page.nextPageIndex,
           filters: filters,
         ),
       );
-
-      /// Automatically fetch the next page if the lookup product is not found
-      if (lookupProductId != null && lookupProductIndex == null) {
-        final nextPageIndex = page.nextPageIndex;
-        if (nextPageIndex != null) {
-          _getPage(
-            pageNumber: nextPageIndex,
-            filters: filters,
-            lookupProductId: lookupProductId,
-          );
-        }
-      }
     } catch (e) {
       emit(Error(error: e));
     }
@@ -157,10 +134,5 @@ class HomeCubit extends ListenerCubit<HomeState, ProductsFilters> {
         page.totalPages > request.pageNumber ? request.pageNumber + 1 : null;
 
     return _PaginatedResult(items: page.products, nextPageIndex: nextPageIndex);
-  }
-
-  int? _getIndexForProduct(String productId, List<Product> products) {
-    final index = products.indexWhere((product) => product.id == productId);
-    return index != -1 ? index : null;
   }
 }

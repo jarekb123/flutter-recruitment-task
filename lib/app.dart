@@ -16,7 +16,7 @@ class App extends StatelessWidget {
     return RepositoryProvider.value(
       value: productsRepository,
       child: const MaterialApp(
-        home: HomePage(lookupProductId: '913'),
+        home: HomePage(findProductId: '933'),
       ),
     );
   }
