@@ -68,6 +68,23 @@ class MockedProductsRepository implements ProductsRepository {
       return false;
     }
 
+    return _applyPriceRange(product, request.minPrice, request.maxPrice);
+  }
+
+  bool _applyPriceRange(
+    Product product,
+    double? minPrice,
+    double? maxPrice,
+  ) {
+    // Assumption: user pays promotional price if available
+    final price = product.offer.promotionalPrice ?? product.offer.regularPrice;
+
+    if (minPrice != null && price.amount < minPrice) {
+      return false;
+    }
+    if (maxPrice != null && price.amount > maxPrice) {
+      return false;
+    }
     return true;
   }
 }

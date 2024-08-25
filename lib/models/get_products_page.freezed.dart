@@ -21,6 +21,8 @@ mixin _$GetProductsPage {
   bool get favoritesOnly => throw _privateConstructorUsedError;
   bool get availableOnly => throw _privateConstructorUsedError;
   bool get bestOnly => throw _privateConstructorUsedError;
+  double? get minPrice => throw _privateConstructorUsedError;
+  double? get maxPrice => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $GetProductsPageCopyWith<GetProductsPage> get copyWith =>
@@ -38,7 +40,9 @@ abstract class $GetProductsPageCopyWith<$Res> {
       String? searchQuery,
       bool favoritesOnly,
       bool availableOnly,
-      bool bestOnly});
+      bool bestOnly,
+      double? minPrice,
+      double? maxPrice});
 }
 
 /// @nodoc
@@ -59,6 +63,8 @@ class _$GetProductsPageCopyWithImpl<$Res, $Val extends GetProductsPage>
     Object? favoritesOnly = null,
     Object? availableOnly = null,
     Object? bestOnly = null,
+    Object? minPrice = freezed,
+    Object? maxPrice = freezed,
   }) {
     return _then(_value.copyWith(
       pageNumber: null == pageNumber
@@ -81,6 +87,14 @@ class _$GetProductsPageCopyWithImpl<$Res, $Val extends GetProductsPage>
           ? _value.bestOnly
           : bestOnly // ignore: cast_nullable_to_non_nullable
               as bool,
+      minPrice: freezed == minPrice
+          ? _value.minPrice
+          : minPrice // ignore: cast_nullable_to_non_nullable
+              as double?,
+      maxPrice: freezed == maxPrice
+          ? _value.maxPrice
+          : maxPrice // ignore: cast_nullable_to_non_nullable
+              as double?,
     ) as $Val);
   }
 }
@@ -98,7 +112,9 @@ abstract class _$$GetProductsPageImplCopyWith<$Res>
       String? searchQuery,
       bool favoritesOnly,
       bool availableOnly,
-      bool bestOnly});
+      bool bestOnly,
+      double? minPrice,
+      double? maxPrice});
 }
 
 /// @nodoc
@@ -117,6 +133,8 @@ class __$$GetProductsPageImplCopyWithImpl<$Res>
     Object? favoritesOnly = null,
     Object? availableOnly = null,
     Object? bestOnly = null,
+    Object? minPrice = freezed,
+    Object? maxPrice = freezed,
   }) {
     return _then(_$GetProductsPageImpl(
       pageNumber: null == pageNumber
@@ -139,6 +157,14 @@ class __$$GetProductsPageImplCopyWithImpl<$Res>
           ? _value.bestOnly
           : bestOnly // ignore: cast_nullable_to_non_nullable
               as bool,
+      minPrice: freezed == minPrice
+          ? _value.minPrice
+          : minPrice // ignore: cast_nullable_to_non_nullable
+              as double?,
+      maxPrice: freezed == maxPrice
+          ? _value.maxPrice
+          : maxPrice // ignore: cast_nullable_to_non_nullable
+              as double?,
     ));
   }
 }
@@ -151,7 +177,9 @@ class _$GetProductsPageImpl implements _GetProductsPage {
       this.searchQuery,
       this.favoritesOnly = false,
       this.availableOnly = false,
-      this.bestOnly = false});
+      this.bestOnly = false,
+      this.minPrice,
+      this.maxPrice});
 
   @override
   final int pageNumber;
@@ -166,10 +194,14 @@ class _$GetProductsPageImpl implements _GetProductsPage {
   @override
   @JsonKey()
   final bool bestOnly;
+  @override
+  final double? minPrice;
+  @override
+  final double? maxPrice;
 
   @override
   String toString() {
-    return 'GetProductsPage(pageNumber: $pageNumber, searchQuery: $searchQuery, favoritesOnly: $favoritesOnly, availableOnly: $availableOnly, bestOnly: $bestOnly)';
+    return 'GetProductsPage(pageNumber: $pageNumber, searchQuery: $searchQuery, favoritesOnly: $favoritesOnly, availableOnly: $availableOnly, bestOnly: $bestOnly, minPrice: $minPrice, maxPrice: $maxPrice)';
   }
 
   @override
@@ -186,12 +218,16 @@ class _$GetProductsPageImpl implements _GetProductsPage {
             (identical(other.availableOnly, availableOnly) ||
                 other.availableOnly == availableOnly) &&
             (identical(other.bestOnly, bestOnly) ||
-                other.bestOnly == bestOnly));
+                other.bestOnly == bestOnly) &&
+            (identical(other.minPrice, minPrice) ||
+                other.minPrice == minPrice) &&
+            (identical(other.maxPrice, maxPrice) ||
+                other.maxPrice == maxPrice));
   }
 
   @override
   int get hashCode => Object.hash(runtimeType, pageNumber, searchQuery,
-      favoritesOnly, availableOnly, bestOnly);
+      favoritesOnly, availableOnly, bestOnly, minPrice, maxPrice);
 
   @JsonKey(ignore: true)
   @override
@@ -207,7 +243,9 @@ abstract class _GetProductsPage implements GetProductsPage {
       final String? searchQuery,
       final bool favoritesOnly,
       final bool availableOnly,
-      final bool bestOnly}) = _$GetProductsPageImpl;
+      final bool bestOnly,
+      final double? minPrice,
+      final double? maxPrice}) = _$GetProductsPageImpl;
 
   @override
   int get pageNumber;
@@ -219,6 +257,10 @@ abstract class _GetProductsPage implements GetProductsPage {
   bool get availableOnly;
   @override
   bool get bestOnly;
+  @override
+  double? get minPrice;
+  @override
+  double? get maxPrice;
   @override
   @JsonKey(ignore: true)
   _$$GetProductsPageImplCopyWith<_$GetProductsPageImpl> get copyWith =>

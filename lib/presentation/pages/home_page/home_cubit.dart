@@ -98,6 +98,8 @@ class HomeCubit extends ListenerCubit<HomeState, ProductsFilters> {
           bestOnly: filters?.bestOnly ?? false,
           favoritesOnly: filters?.favoritesOnly ?? false,
           searchQuery: filters?.searchQuery,
+          minPrice: filters?.priceRange?.min,
+          maxPrice: filters?.priceRange?.max,
         ),
       );
 

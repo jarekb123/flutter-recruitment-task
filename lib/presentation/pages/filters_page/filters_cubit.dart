@@ -5,12 +5,21 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'filters_cubit.freezed.dart';
 
 @freezed
+class PriceRange with _$PriceRange {
+  const factory PriceRange({
+    required double min,
+    required double max,
+  }) = _PriceRange;
+}
+
+@freezed
 class ProductsFilters with _$ProductsFilters {
   const factory ProductsFilters({
     @Default(false) bool favoritesOnly,
     @Default(false) bool availableOnly,
     @Default(false) bool bestOnly,
-    required String? searchQuery,
+    String? searchQuery,
+    PriceRange? priceRange,
   }) = _ProductsFilters;
 }
 
@@ -37,6 +46,10 @@ class FiltersCubit extends Cubit<ProductsFilters> with Sender<ProductsFilters> {
 
   void toggleBestOnly() {
     emit(state.copyWith(bestOnly: !state.bestOnly));
+  }
+
+  void setPriceRange(PriceRange priceRange) {
+    emit(state.copyWith(priceRange: priceRange));
   }
 
   void save() {

@@ -10,5 +10,7 @@ class GetProductsPage with _$GetProductsPage {
     @Default(false) bool favoritesOnly,
     @Default(false) bool availableOnly,
     @Default(false) bool bestOnly,
+    double? minPrice,
+    double? maxPrice,
   }) = _GetProductsPage;
 }

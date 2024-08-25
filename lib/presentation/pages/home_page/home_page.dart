@@ -144,13 +144,57 @@ class _ProductCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Row(
         children: [
-          BigText(product.name),
-          _Tags(product: product),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                BigText(product.name),
+                _Tags(product: product),
+              ],
+            ),
+          ),
+          _Prices(
+            regularPrice: product.offer.regularPrice,
+            promotionalPrice: product.offer.promotionalPrice,
+          ),
         ],
       ),
+    );
+  }
+}
+
+class _Prices extends StatelessWidget {
+  const _Prices({
+    super.key,
+    required this.regularPrice,
+    this.promotionalPrice,
+  });
+
+  final Price regularPrice;
+  final Price? promotionalPrice;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        if (promotionalPrice != null)
+          Text(
+            promotionalPrice!.amount.toStringAsFixed(2),
+            style: const TextStyle(fontSize: 20),
+          ),
+        Text(
+          regularPrice.amount.toStringAsFixed(2),
+          style: TextStyle(
+            fontSize: promotionalPrice != null ? null : 20,
+            decoration: promotionalPrice != null
+                ? TextDecoration.lineThrough
+                : TextDecoration.none,
+          ),
+        ),
+      ],
     );
   }
 }
