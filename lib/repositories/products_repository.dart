@@ -7,6 +7,7 @@ import 'dart:developer';
 import 'package:flutter/services.dart';
 import 'package:flutter_recruitment_task/models/get_products_page.dart';
 import 'package:flutter_recruitment_task/models/products_page.dart';
+import 'package:flutter_recruitment_task/repositories/products_filter.dart';
 
 const _fakeDelay = Duration(milliseconds: 500);
 
@@ -34,7 +35,7 @@ class MockedProductsRepository implements ProductsRepository {
     /// for the products list.
     final filteredProducts = page.products
         .where(
-          (product) => _applyFilter(product, param),
+          (product) => filterProducts(product, param),
         )
         .toList();
 
@@ -47,44 +48,5 @@ class MockedProductsRepository implements ProductsRepository {
         products: filteredProducts,
       ),
     );
-  }
-
-  bool _applyFilter(Product product, GetProductsPage request) {
-    if (request.favoritesOnly && product.isFavorite == false) {
-      return false;
-    }
-
-    if (request.availableOnly && !product.available) {
-      return false;
-    }
-
-    if (request.bestOnly && product.offer.isBest == false) {
-      return false;
-    }
-
-    final searchQuery = request.searchQuery;
-    if (searchQuery != null &&
-        !product.name.toLowerCase().contains(searchQuery.toLowerCase())) {
-      return false;
-    }
-
-    return _applyPriceRange(product, request.minPrice, request.maxPrice);
-  }
-
-  bool _applyPriceRange(
-    Product product,
-    double? minPrice,
-    double? maxPrice,
-  ) {
-    // Assumption: user pays promotional price if available
-    final price = product.offer.promotionalPrice ?? product.offer.regularPrice;
-
-    if (minPrice != null && price.amount < minPrice) {
-      return false;
-    }
-    if (maxPrice != null && price.amount > maxPrice) {
-      return false;
-    }
-    return true;
   }
 }
