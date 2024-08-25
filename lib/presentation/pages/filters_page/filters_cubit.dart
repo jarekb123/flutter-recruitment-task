@@ -1,5 +1,6 @@
 import 'package:comms/comms.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_recruitment_task/presentation/events.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'filters_cubit.freezed.dart';
@@ -23,7 +24,8 @@ class ProductsFilters with _$ProductsFilters {
   }) = _ProductsFilters;
 }
 
-class FiltersCubit extends Cubit<ProductsFilters> with Sender<ProductsFilters> {
+class FiltersCubit extends Cubit<ProductsFilters>
+    with Sender<FiltersAppliedEvent> {
   FiltersCubit({
     ProductsFilters? initialFilters,
   }) : super(
@@ -53,6 +55,6 @@ class FiltersCubit extends Cubit<ProductsFilters> with Sender<ProductsFilters> {
   }
 
   void save() {
-    send(state);
+    send(FiltersAppliedEvent(state));
   }
 }

@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:comms/comms.dart';
 import 'package:flutter_recruitment_task/models/get_products_page.dart';
 import 'package:flutter_recruitment_task/models/products_page.dart';
+import 'package:flutter_recruitment_task/presentation/events.dart';
 import 'package:flutter_recruitment_task/presentation/pages/filters_page/filters_cubit.dart';
 import 'package:flutter_recruitment_task/repositories/products_repository.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -30,18 +31,18 @@ class _PaginatedResult<T> {
   final int? nextPageIndex;
 }
 
-class HomeCubit extends ListenerCubit<HomeState, ProductsFilters> {
+class HomeCubit extends ListenerCubit<HomeState, FiltersAppliedEvent> {
   HomeCubit(this._productsRepository) : super(const Loading());
 
   final ProductsRepository _productsRepository;
 
   @override
-  void onMessage(ProductsFilters message) {
+  void onMessage(FiltersAppliedEvent message) {
     /// If the filter are applied, we should fetch the first page
     /// with the applied filters.
     _getPage(
       pageNumber: 1,
-      filters: message,
+      filters: message.filters,
     );
   }
 
