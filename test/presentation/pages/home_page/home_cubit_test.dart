@@ -2,6 +2,7 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:comms/comms.dart';
 import 'package:flutter_recruitment_task/models/get_products_page.dart';
 import 'package:flutter_recruitment_task/models/products_page.dart';
+import 'package:flutter_recruitment_task/presentation/events.dart';
 import 'package:flutter_recruitment_task/presentation/pages/filters_page/filters_cubit.dart';
 import 'package:flutter_recruitment_task/presentation/pages/home_page/home_cubit.dart';
 import 'package:flutter_recruitment_task/repositories/products_repository.dart';
@@ -105,6 +106,8 @@ void main() {
             bestOnly: true,
             favoritesOnly: true,
             searchQuery: 'search',
+            minPrice: 10,
+            maxPrice: 20,
           ),
         ),
       ).thenAnswer(
@@ -123,6 +126,8 @@ void main() {
             bestOnly: true,
             favoritesOnly: true,
             searchQuery: 'search',
+            minPrice: 10,
+            maxPrice: 20,
           ),
         ),
       ).thenAnswer(
@@ -137,11 +142,14 @@ void main() {
     act: (bloc) async {
       final send = getSend();
       send(
-        const ProductsFilters(
-          favoritesOnly: true,
-          availableOnly: true,
-          bestOnly: true,
-          searchQuery: 'search',
+        FiltersAppliedEvent(
+          const ProductsFilters(
+            favoritesOnly: true,
+            availableOnly: true,
+            bestOnly: true,
+            searchQuery: 'search',
+            priceRange: PriceRange(min: 10, max: 20),
+          ),
         ),
       );
       await Future.delayed(Duration.zero);
@@ -161,6 +169,7 @@ void main() {
           bestOnly: true,
           favoritesOnly: true,
           searchQuery: 'search',
+          priceRange: PriceRange(min: 10, max: 20),
         ),
       ),
       Loaded(
@@ -171,6 +180,7 @@ void main() {
           bestOnly: true,
           favoritesOnly: true,
           searchQuery: 'search',
+          priceRange: PriceRange(min: 10, max: 20),
         ),
       ),
     ],
