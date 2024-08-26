@@ -41,10 +41,6 @@ class _ScrollToItemState<Item> extends State<ScrollToItem<Item>> {
     );
 
     _onStateChanged(_findItemCubit.state);
-    // _observerController.initialIndex = _findItemCubit.state.maybeWhen(
-    //   found: (index) => index,
-    //   orElse: () => 0,
-    // );
   }
 
   @override
